@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
 import firebase from 'firebase'
 
 export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      nomeInput : '',
-      idadeInput : ''
+      list : []
     }
 
     let config = {
@@ -18,53 +17,37 @@ export default class App extends Component {
       storageBucket: "",
       messagingSenderId: ""
     };
-    firebase.initializeApp(config)
+    firebase.initializeApp(config);
 
-    /* Alterando dados do usuário tendo o id como referência 
-    let idUsuario = '-LdfjTyFiNTrSEqz4A68'
-
-    firebase.database().ref('usuarios').child(idUsuario).set({
-      nome : 'Felipe Alves',
-      idade : 15
-    }) */
-
-    /* Excluindo dados do usuário tendo o id como referência
-    let idUsuario = '-LdfjTyFiNTrSEqz4A68'
-    
-    firebase.database().ref('usuarios').child(idUsuario).remove()
-
-    this.inserirUsuario = this.inserirUsuario.bind(this) */
-
-
-  }
-
-  inserirUsuario() {
-    if(this.state.nomeInput.length > 0) {
-      let usuarios = firebase.database().ref('usuarios')
-      let chave = usuarios.push().key
-
-      usuarios.child(chave).set({
-        nome : this.state.nomeInput,
-        idade : this.state.idadeInput
+    firebase.database().ref('usuarios').on('value', (snapshot) => {
+      let state = this.state
+      state.list= []
+      snapshot.forEach((childItem) => {
+        state.list.push({
+          key : childItem.key,
+          nome : childItem.val().nome,
+          idade : childItem.val().idade
+        })
       })
 
-      alert('Usuário inserido! =D')
-    }
+      this.setState(state)
 
+    })
   }
   
   render() {
     return(
       <View style={styles.container}>
-        <Text style={styles.text}>Nome do usuário:</Text>
-        <TextInput onChangeText={(nomeInput) => this.setState({nomeInput})} style={styles.input}
-        placeholder='Digite o nome do usuário' />
-
-        <Text style={styles.text}>Idade do usuário:</Text>
-        <TextInput onChangeText={(idadeInput) => this.setState({idadeInput})} style={styles.input}
-        placeholder='Digite a idade do usuário' />
-
-        <Button title='Inserir usuário' onPress={this.inserirUsuario} />
+        <FlatList 
+          data={this.state.list}
+          renderItem={({item}) => {
+            return(
+              <View>
+                <Text>{item.key} | {item.nome}, {item.idade} anos</Text>
+              </View>
+            )
+          }}
+        />
       </View>
     )
   }
@@ -75,22 +58,6 @@ const styles = StyleSheet.create({
     flex : 1,
     justifyContent : 'center',
     alignItems : 'center'
-  },
-
-  input : {
-    width : 300,
-    height : 50,
-    borderWidth : 2,
-    borderRadius : 5,
-    borderColor : '#6A5ACD',
-    marginBottom : 20
-  },
-
-  text : {
-    fontSize : 16,
-    fontWeight : 'bold',
-    marginLeft : -170 ,
-    marginBottom : 5
   }
 
 });
