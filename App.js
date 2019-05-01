@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import firebase from 'firebase'
 
 export default class App extends Component {
@@ -21,33 +21,31 @@ export default class App extends Component {
 
     firebase.initializeApp(config);
 
-    this.cadastrarUsuario = this.cadastrarUsuario.bind(this)
-  }
-  
-  cadastrarUsuario() {
-    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.senha)
-    .catch((error) => {
-      switch(error.code) {
-        case 'auth/weak-password' :
-          alert('Sua senha deve ter pelo menos 6 caracteres')
-        break
-
-        case 'auth/invalid-email' : 
-          alert('E-mail inválido! Insira um e-mail válido para seguir com o cadastro do seu usuário')
-        break
-
-        case 'auth/email-already-in-use' :
-          alert('E-mail já sendo utilizado por algum usuário')
-        break
-        
-        default :
-          alert('Ocorreu um erro! Tente novamente mais tarde.')
-        break  
-
+    //Listener ou Olheiro 
+    firebase.auth().onAuthStateChanged((user) => {
+      if(user) {
+        alert('Usuário logado')
       }
 
     })
 
+    this.logarUsuario = this.logarUsuario.bind(this)
+    this.logoutUsuario = this.logoutUsuario.bind(this)
+  }
+
+  logarUsuario() {
+    firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.senha)
+    .catch((error) => {
+      if(error.code == 'auth/wrong-password') {
+        alert('Senha incorreta! :(')
+      } else {
+        alert('Tenta novamente mais tarde!')
+      }
+    })
+  }
+
+  logoutUsuario() {
+    firebase.auth().signOut()
   }
 
   render() {
@@ -60,7 +58,9 @@ export default class App extends Component {
         <TextInput style={styles.input} onChangeText={(senha) => this.setState({senha})} 
         secureTextEntry = {true} />
 
-        <Button title='Cadastrar usuário' onPress={this.cadastrarUsuario} />
+        <Button title='Fazer Login' onPress={this.logarUsuario} style={styles.button} />
+
+        <Button title='Fazer LogOut' onPress={this.logoutUsuario} />
       </View>
     )
   }
