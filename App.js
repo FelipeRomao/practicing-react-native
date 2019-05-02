@@ -6,6 +6,7 @@ export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      nome : '',
       email : '',
       senha : ''
     }
@@ -21,36 +22,37 @@ export default class App extends Component {
 
     firebase.initializeApp(config);
 
-    //Listener ou Olheiro 
+    firebase.auth().signOut()
+
     firebase.auth().onAuthStateChanged((user) => {
       if(user) {
-        alert('Usuário logado')
-      }
+        
+        firebase.database().ref('usuarios').child(user.uid).set({
+          nome : this.state.nome
+        })
 
+        alert('Usuário logado com sucesso')
+      }
     })
 
-    this.logarUsuario = this.logarUsuario.bind(this)
-    this.logoutUsuario = this.logoutUsuario.bind(this)
+    this.cadastrar = this.cadastrar.bind(this)
   }
 
-  logarUsuario() {
-    firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.senha)
+  cadastrar() {
+    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.senha)
     .catch((error) => {
-      if(error.code == 'auth/wrong-password') {
-        alert('Senha incorreta! :(')
-      } else {
-        alert('Tenta novamente mais tarde!')
-      }
+      alert(error.message)
     })
-  }
-
-  logoutUsuario() {
-    firebase.auth().signOut()
   }
 
   render() {
     return(
       <View style={styles.container}>
+        <Text style={styles.h1}>Inserir novo usuário</Text>
+        
+        <Text style={styles.text}>Nome:</Text>
+        <TextInput style={styles.input} onChangeText={(nome) => this.setState({nome})} />
+
         <Text style={styles.text}>E-mail:</Text>
         <TextInput style={styles.input} onChangeText={(email) => this.setState({email})} />
 
@@ -58,9 +60,7 @@ export default class App extends Component {
         <TextInput style={styles.input} onChangeText={(senha) => this.setState({senha})} 
         secureTextEntry = {true} />
 
-        <Button title='Fazer Login' onPress={this.logarUsuario} style={styles.button} />
-
-        <Button title='Fazer LogOut' onPress={this.logoutUsuario} />
+        <Button title='Cadastrar Usuário' onPress={this.cadastrar} />
       </View>
     )
   }
@@ -87,6 +87,13 @@ const styles = StyleSheet.create({
     fontWeight : 'bold',
     marginLeft : -250 ,
     marginBottom : 5
+  },
+
+  h1 : {
+    fontSize : 20,
+    fontWeight : 'bold',
+    marginBottom : 20,
+    color : '#1E90FF'
   }
 
 });
