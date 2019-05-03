@@ -11,15 +11,6 @@ export default class App extends Component {
       senha : ''
     }
 
-    let config = {
-      apiKey: "",
-      authDomain: "",
-      databaseURL: "",
-      projectId: "",
-      storageBucket: "",
-      messagingSenderId: ""
-    };
-
     firebase.initializeApp(config);
 
     firebase.auth().signOut()
