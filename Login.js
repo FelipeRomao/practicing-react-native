@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TextInput, Button, FlatList } from 'react-native'
+import { View, Text, StyleSheet, TextInput, Button, FlatList, TouchableOpacity } from 'react-native'
 
 import firebase from 'firebase'
 
@@ -13,7 +13,7 @@ export default class Login extends Component {
             list : [],
             uid : ''
         }
-        
+
         firebase.initializeApp(config);
 
         firebase.auth().signOut()
@@ -75,25 +75,43 @@ export default class Login extends Component {
             <View style={styles.container}>
                 <Text style={styles.h1}>Faça seu login</Text>
                 
-                <Text style={styles.text}>E-mail:</Text>
-                <TextInput onChangeText={(email) => this.setState({email})} style={styles.input}
-                placeholder='Digite seu e-mail'/>
+                <View style={styles.addAreaTask}> 
+                    <Text style={styles.text}>E-mail:</Text>
+                    <TextInput onChangeText={(email) => this.setState({email})} style={styles.input}
+                    placeholder='Digite seu e-mail'
+                    placeholderTextColor='#999'
+                    underlineColorAndroid='transparent'
+                    autoCapitalize='none'
+                    autoCorrect={false} />
 
-                <Text style={styles.text}>Senha:</Text>
-                <TextInput onChangeText={(senha) => this.setState({senha})} style={styles.input}
-                placeholder='Digite sua senha' secureTextEntry={true} />
+                    <Text style={styles.text}>Senha:</Text>
+                    <TextInput onChangeText={(senha) => this.setState({senha})} style={styles.input}
+                    placeholder='Digite sua senha' secureTextEntry={true} 
+                    placeholderTextColor='#999'
+                    underlineColorAndroid='transparent'
+                    autoCapitalize='none'
+                    autoCorrect={false} />
 
-                <Button title='Logar' onPress={this.logar} />
-
-                <View style={styles.addAreaTask}>
-                    <Text style={styles.text}>Inserir tarefa</Text>
-                    <TextInput onChangeText={(addTask) => this.setState({addTask})} style={styles.input}
-                    placeholder='Digite sua tarefa' value={this.state.addTask} />
-
-                    <Button title='Adicionar tarefa' onPress={this.addUserTask} />
+                    <TouchableOpacity onPress={this.logar} style={styles.button}>      
+                        <Text style={styles.buttonText}>Fazer login</Text>
+                    </TouchableOpacity>
                 </View>
 
-                <FlatList 
+                <View style={styles.addAreaTask}>
+                    <Text style={styles.text}>Inserir tarefa:</Text>
+                    <TextInput onChangeText={(addTask) => this.setState({addTask})} style={styles.input}
+                    placeholder='Digite sua tarefa' value={this.state.addTask} 
+                    placeholderTextColor='#999'
+                    underlineColorAndroid='transparent'
+                    autoCapitalize='none'
+                    autoCorrect={false} />
+
+                    <TouchableOpacity onPress={this.addUserTask} style={styles.button}>
+                        <Text style={styles.buttonText}>Adicionar Tarefa</Text>
+                    </TouchableOpacity>
+                </View>
+                <FlatList
+                    style={styles.listTaks} 
                     data={this.state.list}
                     renderItem={ ({item}) => <Text>{item.titulo}</Text> }
                 />
@@ -106,35 +124,67 @@ const styles = StyleSheet.create({
     container : {
         flex : 1,
         justifyContent : 'center',
-        alignItems : 'center'
+        alignItems : 'stretch'
     },
 
     input : {
-        width : 300,
         height : 45,
-        borderWidth : 2,
+        borderWidth : 1,
+        borderColor : '#DDD',
         borderRadius : 5,
-        borderColor : '#1E90FF',
+        paddingHorizontal : 20,
         marginBottom : 20
       },
     
       text : {
         fontSize : 16,
         fontWeight : 'bold',
-        marginLeft : -250 ,
-        marginBottom : 5
+        marginRight : 220 ,
+        marginBottom : 7,
+        alignSelf : 'center'
       },
     
       h1 : {
         fontSize : 20,
         fontWeight : 'bold',
-        marginBottom : 20,
-        color : '#1E90FF'
+        marginTop : 10,
+        color : '#1E90FF',
+        alignSelf : 'center'
       },
 
       addAreaTask : {
-          borderWidth : 1,
+          borderWidth : 2,
           borderColor : '#1E90FF',
-          padding : 5
+          padding : 10,
+          marginTop: 20,
+          marginLeft: 5,
+          marginRight: 5
+      },
+
+      button : {
+        height : 48,
+        borderRadius : 4,
+        paddingHorizontal : 20,
+        backgroundColor : '#1E90FF',
+        justifyContent : 'center',
+        alignItems : 'center'
+      },
+
+      buttonText : {
+        fontSize : 16,
+        fontWeight : 'bold',
+        color : '#FFF'
+      },
+
+      listTaks : {
+          padding : 10,
+          marginTop : 20,
+          backgroundColor : '#CCCCCC',
+          marginLeft : 5,
+          marginRight : 5,
+          marginBottom : 20,
+          borderWidth : 2,
+          borderColor : '#1E90FF',
+          borderRadius : 4
       }
 })

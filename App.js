@@ -42,14 +42,29 @@ export default class App extends Component {
         <Text style={styles.h1}>Inserir novo usuário</Text>
         
         <Text style={styles.text}>Nome:</Text>
-        <TextInput style={styles.input} onChangeText={(nome) => this.setState({nome})} />
+        <TextInput style={styles.input} onChangeText={(nome) => this.setState({nome})} 
+          underlineColorAndroid='transparent'
+          placeholder='Digite seu nome'
+          placeholderTextColor='#999'
+          autoCapitalize='none'
+          autoCorrect={false} />
 
         <Text style={styles.text}>E-mail:</Text>
-        <TextInput style={styles.input} onChangeText={(email) => this.setState({email})} />
+        <TextInput style={styles.input} onChangeText={(email) => this.setState({email})} 
+          underlineColorAndroid='transparent'
+          placeholder='Digite seu nome'
+          placeholderTextColor='#999'
+          autoCapitalize='none'
+          autoCorrect={false}/>
 
         <Text style={styles.text}>Senha:</Text>
         <TextInput style={styles.input} onChangeText={(senha) => this.setState({senha})} 
-        secureTextEntry = {true} />
+          secureTextEntry = {true} 
+          underlineColorAndroid='transparent'
+          placeholder='Digite seu nome'
+          placeholderTextColor='#999'
+          autoCapitalize='none'
+          autoCorrect={false}/>
 
         <Button title='Cadastrar Usuário' onPress={this.cadastrar} />
       </View>
@@ -61,15 +76,12 @@ const styles = StyleSheet.create({
   container : {
     flex : 1,
     justifyContent : 'center',
-    alignItems : 'center'
+    alignItems : 'stretch'
   },
 
   input : {
-    width : 300,
     height : 45,
-    borderWidth : 2,
-    borderRadius : 5,
-    borderColor : '#1E90FF',
+    borderRadius : 4,
     marginBottom : 20
   },
 
